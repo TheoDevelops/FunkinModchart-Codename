@@ -180,8 +180,7 @@
 	<haxelib name="flxanimate" />
 
 	<section if="MODCHARTING_FEATURES">
-		<haxeflag name="--macro" value="addMetadata('@:build(modchart.core.macros.Macro.addZProperty())', 'funkin.game.Note')" />
-		<haxeflag name="--macro" value="addMetadata('@:build(modchart.core.macros.Macro.addZProperty())', 'funkin.game.Strum')" />
+		<haxeflag name="--macro" value="addMetadata('@:build(modchart.core.macros.Macro.addZProperty())', 'flixel.FlxObject')" />
 		<haxeflag name="--macro" value="include('modchart')" />
 	</section>
 

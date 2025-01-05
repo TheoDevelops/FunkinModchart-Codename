@@ -68,3 +68,7 @@
 - Hold Rotation can be cancelled (via rotateHoldX, rotateHoldY, rotateHoldZ, can be 0-1)
 - Better Readme
 - Improvements
+
+# 4/01/25
+- Moved renderers from Manager.hx to separate classes (ModchartGraphics.hx)
+- Cleaned and improved a lot of code

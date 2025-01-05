@@ -3,7 +3,7 @@ package modchart.modifiers;
 import modchart.core.util.ModchartUtil;
 import modchart.Manager;
 import modchart.core.util.Constants.RenderParams;
-import modchart.core.util.Constants.NoteData;
+import modchart.core.util.Constants.ArrowData;
 import openfl.geom.Vector3D;
 import flixel.FlxG;
 import flixel.math.FlxMath;
@@ -37,7 +37,7 @@ class Reverse extends Modifier
 
         val += getPercent('reverse', player) + getPercent("reverse" + Std.string(dir), player);
 
-        if(getPercent("unboundedReverse")==0){
+        if(getPercent("unboundedReverse", player)==0){
             val %=2;
             if(val>1)val=2-val;
         }
@@ -76,7 +76,7 @@ class Reverse extends Modifier
 		var angleZ = 0.;
 
 		// Speed
-		scroll.y = scroll.y * (getPercent('xmod')) + (1 + getPercent('scrollSpeed', params.field) + getPercent('scrollSpeed' + Std.string(params.receptor), params.field));
+		scroll.y = scroll.y * (getPercent('xmod', params.field)) + (1 + getPercent('scrollSpeed', params.field) + getPercent('scrollSpeed' + Std.string(params.receptor), params.field));
 
 		// Main
 		angleX += getPercent('scrollAngleX', params.field);

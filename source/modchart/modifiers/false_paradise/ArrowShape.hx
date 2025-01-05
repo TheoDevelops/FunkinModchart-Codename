@@ -1,7 +1,7 @@
 package modchart.modifiers.false_paradise;
 
 import modchart.core.util.Constants.RenderParams;
-import modchart.core.util.Constants.NoteData;
+import modchart.core.util.Constants.ArrowData;
 import openfl.geom.Vector3D;
 import flixel.math.FlxMath;
 import modchart.core.util.ModchartUtil;

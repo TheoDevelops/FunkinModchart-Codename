@@ -8,7 +8,6 @@ class Constants {}
 @:structInit
 class RenderParams
 {
-	public var perc:Float;
 	public var sPos:Float;
 	public var time:Float;
 	public var fBeat:Float;
@@ -18,13 +17,13 @@ class RenderParams
 	public var arrow:Bool;
 
 	// for hold mods
-	public var __holdParentTime:Float;
-	public var __holdLength:Float;
+	public var __holdParentTime:Float = 0;
+	public var __holdLength:Float = 0; 
 	public var __holdOffset:Float = 0;
 }
 
 @:structInit
-class NoteData
+class ArrowData
 {
 	public var time:Float;
 	public var hDiff:Float;
@@ -33,8 +32,8 @@ class NoteData
 	public var arrow:Bool;
 
 	// for hold mods
-	public var __holdParentTime:Float;
-	public var __holdLength:Float;
+	public var __holdParentTime:Float = 0;
+	public var __holdLength:Float = 0;
 	public var __holdOffset:Float = 0;
 }
 

@@ -3,7 +3,7 @@ package modchart;
 import flixel.FlxG;
 import funkin.game.PlayState;
 import modchart.core.util.Constants.RenderParams;
-import modchart.core.util.Constants.NoteData;
+import modchart.core.util.Constants.ArrowData;
 import modchart.core.util.Constants.Visuals;
 import openfl.geom.Vector3D;
 import flixel.math.FlxMath;
@@ -12,15 +12,7 @@ using StringTools;
 
 class Modifier
 {
-    public var percent:Float = 0;
-
-	// arguments are bad
-	public var field:Int = 0;
-
-    public function new(?percent:Null<Float>)
-    {
-        this.percent = percent ?? 0;
-    }
+    public function new() {}
     
     public function render(curPos:Vector3D, params:RenderParams)
     {
@@ -30,18 +22,16 @@ class Modifier
 	{
 		return data;
 	}
-    public function getAliases():Array<String>
-        return [];
 	public function shouldRun(params:RenderParams):Bool
 		return false;
 
-    public function setPercent(name:String, value:Float, ?cField:Int)
+    public function setPercent(name:String, value:Float, field:Int = -1)
     {
-        Manager?.instance?.modifiers?.setPercent(name, value, cField ?? field);
+        Manager?.instance?.modifiers?.setPercent(name, value, field);
     }
-	public function getPercent(name:String, ?cField:Int):Float
+	public function getPercent(name:String, field:Int):Float
     {
-        return Manager?.instance?.modifiers?.getPercent(name, cField ?? field);
+        return Manager?.instance?.modifiers?.getPercent(name, field);
     }
     
 	private function getKeycount(field:Int = 0):Int
@@ -88,6 +78,6 @@ class Modifier
     public function toString():String {
         var classn:String = Type.getClassName(Type.getClass(this));
         classn = classn.substring(classn.lastIndexOf('.') + 1);
-        return classn + '{ percent: $percent }';
+        return 'Modifier[$classn]';
     }
 }

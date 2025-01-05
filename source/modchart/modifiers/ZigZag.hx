@@ -1,7 +1,7 @@
 package modchart.modifiers;
 
 import modchart.core.util.Constants.RenderParams;
-import modchart.core.util.Constants.NoteData;
+import modchart.core.util.Constants.ArrowData;
 import openfl.geom.Vector3D;
 
 class ZigZag extends Modifier
@@ -17,6 +17,4 @@ class ZigZag extends Modifier
     }
 	override public function shouldRun(params:RenderParams):Bool
 		return getPercent('zigZag', params.field) != 0;
-	override public function getAliases():Array<String>
-		return ["triangle", "trianglePath", "zigZagPath"];
 }

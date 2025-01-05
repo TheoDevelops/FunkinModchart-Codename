@@ -7,6 +7,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.tile.FlxDrawTrianglesItem.DrawData;
 import funkin.game.Note;
+import funkin.game.Strum;
 import funkin.game.PlayState;
 import funkin.backend.utils.CoolUtil;
 import funkin.backend.system.Conductor;
@@ -157,5 +158,32 @@ class ModchartUtil
 		}
 
 		return vec;
+	}
+
+	public static function getLaneFromArrow(arrow:FlxSprite)
+	{
+		if (arrow is Note)
+			return cast(arrow, Note).strumID;
+		else if (arrow is Strum)
+			return cast(arrow, Strum).extra.get('lane') ?? 0;
+
+		return 0;
+	}
+	public static function getPlayerFromArrow(arrow:FlxSprite)
+	{
+		if (arrow is Note)
+			return cast(arrow, Note).strumLine.ID;
+		else if (arrow is Strum)
+			return cast(arrow, Strum).extra.get('field') ?? 0;
+
+		return 0;
+	}
+
+	public static function getTimeFromArrow(arrow:FlxSprite)
+	{
+		if (arrow is Note)
+			return cast(arrow, Note).strumTime;
+
+		return 0;
 	}
 }

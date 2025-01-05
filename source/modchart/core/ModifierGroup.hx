@@ -4,7 +4,7 @@ import openfl.geom.Vector3D;
 import modchart.Modifier;
 import modchart.core.util.Constants.Visuals;
 import modchart.core.util.Constants.RenderParams;
-import modchart.core.util.Constants.NoteData;
+import modchart.core.util.Constants.ArrowData;
 import modchart.core.util.ModchartUtil;
 
 import modchart.modifiers.*;
@@ -84,7 +84,7 @@ class ModifierGroup
 	}
 
 	// just render mods with the perspective stuff included
-	public function getPath(pos:Vector3D, data:NoteData, ?posDiff:Float = 0, ?allowVis:Bool = true, ?allowPos:Bool = true):ModifierOutput
+	public function getPath(pos:Vector3D, data:ArrowData, ?posDiff:Float = 0, ?allowVis:Bool = true, ?allowPos:Bool = true):ModifierOutput
 	{
 		var visuals:Visuals = {
 			scaleX: 1.,
@@ -106,11 +106,8 @@ class ModifierGroup
 		for (i in 0...sortedMods.length)
 		{
 			final mod = modifiers.get(sortedMods[i]);
-			mod.field = data.field;
 
 			final args:RenderParams = {
-				// fuck u haxe
-				perc: 0.0,
 				sPos: Conductor.songPosition,
 				fBeat: Conductor.curBeatFloat,
 				time: data.time + posDiff,

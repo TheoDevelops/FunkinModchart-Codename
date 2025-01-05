@@ -1,7 +1,7 @@
 package modchart.modifiers;
 
 import modchart.core.util.Constants.RenderParams;
-import modchart.core.util.Constants.NoteData;
+import modchart.core.util.Constants.ArrowData;
 import openfl.geom.Vector3D;
 
 class Drunk extends Modifier

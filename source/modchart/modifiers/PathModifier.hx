@@ -1,7 +1,7 @@
 package modchart.modifiers;
 
 import modchart.core.util.Constants.RenderParams;
-import modchart.core.util.Constants.NoteData;
+import modchart.core.util.Constants.ArrowData;
 import modchart.core.util.ModchartUtil;
 import openfl.geom.Vector3D;
 import flixel.math.FlxMath;
@@ -27,7 +27,7 @@ class PathModifier extends Modifier
 	
 	public function new(path:Array<PathNode>)
 	{
-		super(0);
+		super();
 
 		loadPath(path);
 	}

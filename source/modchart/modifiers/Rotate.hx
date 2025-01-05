@@ -2,7 +2,7 @@ package modchart.modifiers;
 
 import modchart.core.util.ModchartUtil;
 import modchart.core.util.Constants.RenderParams;
-import modchart.core.util.Constants.NoteData;
+import modchart.core.util.Constants.ArrowData;
 import openfl.geom.Vector3D;
 import flixel.FlxG;
 
@@ -10,9 +10,9 @@ class Rotate extends Modifier
 {
     override public function render(curPos:Vector3D, params:RenderParams)
     {
-		var angleX = getPercent(getRotateName() + Std.string('X'));
-		var angleY = getPercent(getRotateName() + Std.string('Y'));
-		var angleZ = getPercent(getRotateName() + Std.string('Z'));
+		var angleX = getPercent(getRotateName() + Std.string('X'), params.field);
+		var angleY = getPercent(getRotateName() + Std.string('Y'), params.field);
+		var angleZ = getPercent(getRotateName() + Std.string('Z'), params.field);
 
 		if ((angleX + angleY + angleZ) == 0)
 			return curPos;
@@ -33,8 +33,6 @@ class Rotate extends Modifier
 	public function getRotateName():String
 		return 'rotate';
 	
-	override public function getAliases():Array<String>
-		return ['rotateX', 'rotateY', 'rotateZ'];
 	override public function shouldRun(params:RenderParams):Bool
 		return true;
 }

@@ -3,7 +3,7 @@ package modchart.core;
 import flixel.FlxG;
 import funkin.game.PlayState;
 import modchart.core.util.Constants.RenderParams;
-import modchart.core.util.Constants.NoteData;
+import modchart.core.util.Constants.ArrowData;
 import modchart.core.util.Constants.Visuals;
 import openfl.geom.Vector3D;
 import flixel.math.FlxMath;

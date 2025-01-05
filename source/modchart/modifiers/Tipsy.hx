@@ -1,7 +1,7 @@
 package modchart.modifiers;
 
 import modchart.core.util.Constants.RenderParams;
-import modchart.core.util.Constants.NoteData;
+import modchart.core.util.Constants.ArrowData;
 import openfl.geom.Vector3D;
 
 class Tipsy extends Modifier
@@ -21,10 +21,6 @@ class Tipsy extends Modifier
 		tipAddition.scaleBy(tipsy);
 
         return curPos.add(tipAddition);
-    }
-    override public function getAliases()
-    {
-        return ['tipsyX', 'tipsyY', 'tipsyZ'];
     }
 	override public function shouldRun(params:RenderParams):Bool
 		return true;

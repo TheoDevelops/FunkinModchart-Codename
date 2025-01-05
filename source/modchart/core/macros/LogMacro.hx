@@ -13,6 +13,7 @@ using StringTools;
 #end
 
 // macro by Neeoo
+// this is basicly verbose mode ??
 @:noUsing
 class LogMacro {
 	#if macro
