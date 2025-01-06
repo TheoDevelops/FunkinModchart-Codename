@@ -124,7 +124,7 @@ class PlayField extends FlxBasic
 			// tap notes
 			for (arrow in curItems[1])
 			{
-				arrow.visible = arrow.active = false;
+				arrow.visible = false;
 				arrowRenderer.prepare(arrow);
 				drawCB.push({						
 					callback: () -> {
@@ -137,7 +137,7 @@ class PlayField extends FlxBasic
 			// hold notes
 			for (arrow in curItems[2])
 			{
-				arrow.visible = arrow.active = false;
+				arrow.visible = false;
 				holdRenderer.prepare(arrow);
 				drawCB.push({						
 					callback: () -> {
@@ -150,7 +150,7 @@ class PlayField extends FlxBasic
 			// receptors
 			for (receptor in curItems[0])
 			{
-				receptor.visible = receptor.active = false;
+				receptor.visible = false;
 				receptorRenderer.prepare(receptor);
 				if (Manager.instance.renderArrowPaths)
 					pathRenderer.prepare(receptor);
