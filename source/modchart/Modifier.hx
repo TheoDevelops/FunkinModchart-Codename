@@ -1,5 +1,6 @@
 package modchart;
 
+import modchart.core.PlayField;
 import flixel.FlxG;
 import funkin.game.PlayState;
 import modchart.core.util.Constants.RenderParams;
@@ -12,7 +13,11 @@ using StringTools;
 
 class Modifier
 {
-    public function new() {}
+    private var pf:PlayField;
+
+    public function new(pf:PlayField) {
+        this.pf = pf;
+    }
     
     public function render(curPos:Vector3D, params:RenderParams)
     {
@@ -25,13 +30,13 @@ class Modifier
 	public function shouldRun(params:RenderParams):Bool
 		return false;
 
-    public function setPercent(name:String, value:Float, field:Int = -1)
+    public function setPercent(name:String, value:Float, player:Int = -1)
     {
-        Manager?.instance?.modifiers?.setPercent(name, value, field);
+        pf.setPercent(name, value, player);
     }
-	public function getPercent(name:String, field:Int):Float
+	public function getPercent(name:String, player:Int):Float
     {
-        return Manager?.instance?.modifiers?.getPercent(name, field);
+        return pf.getPercent(name, player);
     }
     
 	private function getKeycount(field:Int = 0):Int
@@ -50,8 +55,8 @@ class Modifier
     public function getReceptorX(lane:Int, field:Int)
         @:privateAccess return PlayState?.instance?.strumLines.members[field]?.startingPos?.x + ((ARROW_SIZE) * lane);
 
-	public function getManager():Manager
-		return Manager.instance;
+	public function getManager():PlayField
+		return pf;
 
     private var WIDTH:Float = FlxG.width;
     private var HEIGHT:Float = FlxG.height;

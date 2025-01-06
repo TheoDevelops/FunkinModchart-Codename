@@ -72,3 +72,8 @@
 # 4/01/25
 - Moved renderers from Manager.hx to separate classes (ModchartGraphics.hx)
 - Cleaned and improved a lot of code
+
+# 06/01/25 (penultimate commit)
+- Multiple Playfield support (each one can have his own modifiers and percents)
+- Plugin-based Standalone System (TESTING PHASE, NOT FINISHED)
+- No more rewriting of any flixel class, now all code is added using Macros.

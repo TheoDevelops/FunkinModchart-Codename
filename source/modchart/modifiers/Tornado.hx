@@ -1,5 +1,6 @@
 package modchart.modifiers;
 
+import funkin.game.PlayState;
 import modchart.core.util.Constants.RenderParams;
 import modchart.core.util.Constants.ArrowData;
 import openfl.geom.Vector3D;
@@ -13,19 +14,18 @@ class Tornado extends Modifier
     override public function render(pos:Vector3D, params:RenderParams)
     {
 		var tornado = getPercent('tornado', params.field);
-		var strumLines = getManager().game.strumLines;
 
 		if (tornado == 0)
 			return pos;
 
-		var bWideField = strumLines.members[params.field].members.length > 4;
+		var bWideField = getKeycount() > 4;
 		var iTornadoWidth = bWideField ? 4 : 3;
 
 		var iColNum = params.receptor;
 		var iStartCol = iColNum - iTornadoWidth;
 		var iEndCol = iColNum + iTornadoWidth;
-		iStartCol = Math.round(ModchartUtil.clamp(iStartCol, 0, strumLines.members[params.field].members.length));
-		iEndCol = Math.round(ModchartUtil.clamp(iEndCol, 0, strumLines.members[params.field].members.length));
+		iStartCol = Math.round(ModchartUtil.clamp(iStartCol, 0, getKeycount()));
+		iEndCol = Math.round(ModchartUtil.clamp(iEndCol, 0, getKeycount()));
 
 		var fXOffset = ((ARROW_SIZE * 1.5) - (ARROW_SIZE * params.receptor));
 

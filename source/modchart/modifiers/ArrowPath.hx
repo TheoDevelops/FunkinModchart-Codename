@@ -1,5 +1,6 @@
 package modchart.modifiers;
 
+import modchart.core.PlayField;
 import modchart.core.util.Constants.RenderParams;
 import modchart.core.util.Constants.ArrowData;
 import openfl.geom.Vector3D;
@@ -8,7 +9,7 @@ import modchart.modifiers.PathModifier.PathNode;
 
 class ArrowPath extends PathModifier
 {
-    public function new()
+    public function new(pf:PlayField)
     {
         var path:Array<PathNode> = [];
 
@@ -22,7 +23,7 @@ class ArrowPath extends PathModifier
             });
 		}
 
-        super(path);
+        super(pf, path);
 
         pathOffset.setTo(
             WIDTH * 0.5,

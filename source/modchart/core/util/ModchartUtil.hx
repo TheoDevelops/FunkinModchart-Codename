@@ -95,7 +95,7 @@ class ModchartUtil
 			lower[1].x, lower[1].y
 		];
 	}
-	inline static public function getHoldUVT(arrow:Note, subs:Int)
+	inline static public function getHoldUVT(arrow:FlxSprite, subs:Int)
 	{
 		var uv = new DrawData<Float>(8 * subs, true, []);
 
@@ -158,32 +158,5 @@ class ModchartUtil
 		}
 
 		return vec;
-	}
-
-	public static function getLaneFromArrow(arrow:FlxSprite)
-	{
-		if (arrow is Note)
-			return cast(arrow, Note).strumID;
-		else if (arrow is Strum)
-			return cast(arrow, Strum).extra.get('lane') ?? 0;
-
-		return 0;
-	}
-	public static function getPlayerFromArrow(arrow:FlxSprite)
-	{
-		if (arrow is Note)
-			return cast(arrow, Note).strumLine.ID;
-		else if (arrow is Strum)
-			return cast(arrow, Strum).extra.get('field') ?? 0;
-
-		return 0;
-	}
-
-	public static function getTimeFromArrow(arrow:FlxSprite)
-	{
-		if (arrow is Note)
-			return cast(arrow, Note).strumTime;
-
-		return 0;
 	}
 }

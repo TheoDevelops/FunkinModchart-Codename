@@ -16,7 +16,7 @@ class ReceptorScroll extends Modifier
 		final moveSpeed = Conductor.crochet * 4;
 
 		var diff = -params.hDiff;
-		var sPos = Conductor.songPosition;
+		var sPos = Manager.PLUGIN.getSongPosition();
 		var vDiff = -(diff - sPos) / moveSpeed;
 		var reversed = Math.floor(vDiff)%2 == 0;
 	

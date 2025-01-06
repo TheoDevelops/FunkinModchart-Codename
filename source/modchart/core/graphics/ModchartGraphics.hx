@@ -1,5 +1,6 @@
 package modchart.core.graphics;
 
+import funkin.game.PlayState;
 import openfl.display.Shape;
 import funkin.backend.system.Conductor;
 import flixel.math.FlxAngle;
@@ -29,10 +30,10 @@ var pathVector = new Vector3D();
 
 class ModchartRenderer<T:FlxBasic> extends FlxBasic
 {
-    private var instance:Null<Manager>;
+    private var instance:Null<PlayField>;
     private var queue:Array<FMDrawInstruction>;
 
-    public function new(instance:Manager)
+    public function new(instance:PlayField)
     {
         super();
 
@@ -47,7 +48,7 @@ class ModchartRenderer<T:FlxBasic> extends FlxBasic
     // public function render(times:Null<Int>):Void {}
 }
 
-class ModchartHoldRenderer extends ModchartRenderer<Note>
+class ModchartHoldRenderer extends ModchartRenderer<FlxSprite>
 {
     private var __lastHoldSubs:Int = -1;
 
@@ -74,16 +75,15 @@ class ModchartHoldRenderer extends ModchartRenderer<Note>
 		// normalized points difference (from 0-1)
 		var unit = nextPoint.subtract(curPoint);
 		unit.normalize();
-		unit.setTo(unit.y, unit.x, 0);
 
-		var size = (new Vector3D(-Manager.HOLD_SIZEDIV2).subtract(new Vector3D(Manager.HOLD_SIZEDIV2)).length * .5) * output1.visuals.scaleX * zScale * output1.visuals.zoom;
-
+		var size = Manager.HOLD_SIZEDIV2 * output1.visuals.scaleX * zScale * output1.visuals.zoom;
+    
 		var quads = [
-			new Vector3D(-unit.x * size, unit.y * size),
-			new Vector3D(unit.x * size, -unit.y * size)
+			new Vector3D(-unit.y * size, unit.x * size),
+			new Vector3D(unit.y * size, -unit.x * size)
 		];
 		@:privateAccess
-		for (i in 0...quads.length)
+		for (i in 0...2)
 		{
 			var visuals = [output1.visuals, output2.visuals][i];
 
@@ -97,12 +97,12 @@ class ModchartHoldRenderer extends ModchartRenderer<Note>
 			{
 				__matrix.b = ModchartUtil.fastTan(visuals.skewY * FlxAngle.TO_RAD);
 				__matrix.c = ModchartUtil.fastTan(visuals.skewX * FlxAngle.TO_RAD);
-			}
 
-			rotOutput.x = __matrix.__transformX(rotationVector.x, rotationVector.y);
-			rotOutput.y = __matrix.__transformY(rotationVector.x, rotationVector.y);
-			
-			__matrix.identity();
+                rotOutput.x = __matrix.__transformX(rotationVector.x, rotationVector.y);
+                rotOutput.y = __matrix.__transformY(rotationVector.x, rotationVector.y);
+                
+                __matrix.identity();
+			}
 
 			quads[i] = rotOutput;
 		}
@@ -119,7 +119,7 @@ class ModchartHoldRenderer extends ModchartRenderer<Note>
     @:noCompletion
     private function updateIndices()
 	{
-        final HOLD_SUBDIVITIONS = instance.HOLD_SUBDIVITIONS;
+        final HOLD_SUBDIVITIONS = Manager.PLUGIN.getHoldSubdivitions();
 
 		_indices.length = (HOLD_SUBDIVITIONS * 6);
 		for (sub in 0...HOLD_SUBDIVITIONS)
@@ -133,24 +133,27 @@ class ModchartHoldRenderer extends ModchartRenderer<Note>
 			_indices[count + 4] = vert + 2;
 		}
 	}
-    override public function prepare(item:Note):Void
+    override public function prepare(item:FlxSprite):Void
     {
         if (queue == null)
             queue = [];
 
-        final arrow:Note = item;
+        final arrow:FlxSprite = item;
         final newInstruction:FMDrawInstruction = {};
-        final HOLD_SUBDIVITIONS = instance.HOLD_SUBDIVITIONS;
+        final HOLD_SUBDIVITIONS = Manager.PLUGIN.getHoldSubdivitions();
 
         if (__lastHoldSubs != HOLD_SUBDIVITIONS)
             updateIndices();
 
         if (__lastHoldSubs == -1)
-            __lastHoldSubs = instance.HOLD_SUBDIVITIONS;
+            __lastHoldSubs = Manager.PLUGIN.getHoldSubdivitions();
+
+        var player = Manager.PLUGIN.getPlayerFromArrow(item);
+        var lane = Manager.PLUGIN.getLaneFromArrow(item);
 
         var basePos = new Vector3D(
-            instance.getReceptorX(arrow.strumID, arrow.strumLine.ID),
-            instance.getReceptorY(arrow.strumID, arrow.strumLine.ID)
+            Manager.PLUGIN.getDefaultReceptorX(lane, player),
+            Manager.PLUGIN.getDefaultReceptorY(lane, player)
         ).add(ModchartUtil.getHalfPos());
 
         var vertTotal:Array<Float> = [];
@@ -168,7 +171,7 @@ class ModchartHoldRenderer extends ModchartRenderer<Note>
         Manager.HOLD_SIZE = arrow.width;
         Manager.HOLD_SIZEDIV2 = arrow.width * .5;
 
-        var subCr = (instance._crochet * ((arrow.nextSustain == null) ? 0.6 : 1)) / HOLD_SUBDIVITIONS;
+        var subCr = ((Manager.PLUGIN.getStaticCrochet() * .25) * ((Manager.PLUGIN.isHoldEnd(item)) ? 0.6 : 1)) / HOLD_SUBDIVITIONS;
         for (sub in 0...HOLD_SUBDIVITIONS)
         {
             var subOff = subCr * sub;
@@ -218,7 +221,7 @@ class ModchartHoldRenderer extends ModchartRenderer<Note>
 
         queue.push(newInstruction);
 
-        __lastHoldSubs = instance.HOLD_SUBDIVITIONS;
+        __lastHoldSubs = Manager.PLUGIN.getHoldSubdivitions();
     }
     override public function shift()
     {
@@ -253,32 +256,33 @@ class ModchartHoldRenderer extends ModchartRenderer<Note>
         @:privateAccess for (camera in (item._cameras ?? item.strumLine.cameras))
         {
             var item = camera.startTrianglesBatch(item.graphic, false, true, item.blend, true, item.shader);
-            item.addTrianglesTransforms(instruction.vertices, instruction.indices, instruction.uvt, new openfl.Vector<Int>(), null, camera._bounds, instruction.colorData);
+            item.addGradientTriangles(instruction.vertices, instruction.indices, instruction.uvt, new openfl.Vector<Int>(), null, camera._bounds, instruction.colorData);
         }
     }
 
-    private function getArrowParams(arrow:Note, posOff:Float = 0):ArrowData
+    private function getArrowParams(arrow:FlxSprite, posOff:Float = 0):ArrowData
 	{
-		final centered2 = instance.getPercent('centered2', arrow.strumLine.ID);
-		final timeC2 = flixel.FlxG.height * 0.25 * centered2;
+        final player = Manager.PLUGIN.getPlayerFromArrow(arrow);
+        final lane = Manager.PLUGIN.getLaneFromArrow(arrow);
 
-		var pos = (arrow.strumTime - Conductor.songPosition) + posOff;
+		final centered2 = instance.getPercent('centered2', player);
+		final timeC2 = flixel.FlxG.height * 0.25 * centered2;
+        final time = Manager.PLUGIN.getTimeFromArrow(arrow);
+
+		var pos = (time - Manager.PLUGIN.getSongPosition()) + posOff;
 
 		// clip rect
-		if (arrow.wasGoodHit && pos < 0)
+		if (Manager.PLUGIN.arrowHitted(arrow) && pos < 0)
 			pos = 0;
 
 		pos += timeC2;
 
 		return {
-			time: arrow.strumTime + posOff + timeC2,
+			time: time + posOff + timeC2,
 			hDiff: pos,
-			receptor: arrow.strumID,
-			field: arrow.strumLine.ID,
-			arrow: true,
-			__holdParentTime: arrow.isSustainNote ? arrow.extra.get('sEntry') + posOff : -1,
-			__holdLength: arrow.isSustainNote ? arrow.sustainLength : -1,
-			__holdOffset: arrow.isSustainNote ? arrow.extra.get('sOff') : -1
+			receptor: lane,
+			field: player,
+			arrow: true
 		};
 	}
 }
@@ -290,32 +294,32 @@ class ModchartArrowRenderer extends ModchartRenderer<FlxSprite>
         if (queue == null)
             queue = [];
 
-        final player = ModchartUtil.getPlayerFromArrow(arrow);
+        final player = Manager.PLUGIN.getPlayerFromArrow(arrow);
 
         // setup the position
-        var arrowTime = ModchartUtil.getTimeFromArrow(arrow);
-        var arrowDiff = arrowTime - Conductor.songPosition;
+        var arrowTime = Manager.PLUGIN.getTimeFromArrow(arrow);
+        var arrowDiff = arrowTime - Manager.PLUGIN.getSongPosition();
 
         // apply centered 2 (aka centered path)
-        if (arrow is Note)
+        if (Manager.PLUGIN.isTapNote(arrow))
         {
-            arrowTime += FlxG.height * 0.25 * instance.getPercent('centered2', player);
+            arrowDiff += FlxG.height * 0.25 * instance.getPercent('centered2', player);
         } else {
-            arrowTime = Conductor.songPosition + (FlxG.height * 0.25 * instance.getPercent('centered2', player));
-            arrowDiff = arrowTime - Conductor.songPosition;
+            arrowTime = Manager.PLUGIN.getSongPosition() + (FlxG.height * 0.25 * instance.getPercent('centered2', player));
+            arrowDiff = arrowTime - Manager.PLUGIN.getSongPosition();
         }
 
         var arrowData:ArrowData = {
             time: arrowTime,
             hDiff: arrowDiff,
-            receptor: ModchartUtil.getLaneFromArrow(arrow),
+            receptor: Manager.PLUGIN.getLaneFromArrow(arrow),
             field: player,
-            arrow: false
+            arrow: true
         };
 
         helperVector.setTo(
-            instance.getReceptorX(arrowData.receptor, arrowData.field) + Manager.ARROW_SIZEDIV2,
-            instance.getReceptorY(arrowData.receptor, arrowData.field) + Manager.ARROW_SIZEDIV2, 0
+            Manager.PLUGIN.getDefaultReceptorX(arrowData.receptor, arrowData.field) + Manager.ARROW_SIZEDIV2,
+            Manager.PLUGIN.getDefaultReceptorY(arrowData.receptor, arrowData.field) + Manager.ARROW_SIZEDIV2, 0
         );
 
 		final output = instance.modifiers.getPath(helperVector, arrowData);
@@ -329,8 +333,8 @@ class ModchartArrowRenderer extends ModchartRenderer<FlxSprite>
 		{
 			final nextOutput = instance.modifiers.getPath(
                 new Vector3D(
-                    instance.getReceptorX(arrowData.receptor, arrowData.field) + Manager.ARROW_SIZEDIV2,
-                    instance.getReceptorY(arrowData.receptor, arrowData.field) + Manager.ARROW_SIZEDIV2
+                    Manager.PLUGIN.getDefaultReceptorX(arrowData.receptor, arrowData.field) + Manager.ARROW_SIZEDIV2,
+                    Manager.PLUGIN.getDefaultReceptorY(arrowData.receptor, arrowData.field) + Manager.ARROW_SIZEDIV2
                 ),
                 arrowData,
                 1
@@ -453,7 +457,7 @@ class ModchartArrowRenderer extends ModchartRenderer<FlxSprite>
 
         final item = instruction.item;
         
-        @:privateAccess for (camera in (item._cameras ?? instance.game.strumLines.members[ModchartUtil.getPlayerFromArrow(item)].cameras))
+        @:privateAccess for (camera in (item._cameras ?? Manager.PLUGIN.getArrowCamera()))
         {
 			camera.drawTriangles(
                 item.graphic,
@@ -480,7 +484,7 @@ class ModchartArrowPath extends ModchartRenderer<FlxSprite>
     var __pathPoints:Vector<Float> = new Vector<Float>();
 	var __pathCommands:Vector<Int> = new Vector<Int>();
 
-    public function new(instance:Manager)
+    public function new(instance:PlayField)
     {
         super(instance);
 
@@ -493,8 +497,8 @@ class ModchartArrowPath extends ModchartRenderer<FlxSprite>
         if (queue == null)
             queue = [];
 
-        final lane = ModchartUtil.getLaneFromArrow(item);
-        final fn = ModchartUtil.getPlayerFromArrow(item);
+        final lane = Manager.PLUGIN.getLaneFromArrow(item);
+        final fn = Manager.PLUGIN.getPlayerFromArrow(item);
 
         final alpha = instance.getPercent('arrowPathAlpha', fn);
         final thickness = 1 + Math.round(instance.getPercent('arrowPathThickness', fn));
@@ -508,7 +512,7 @@ class ModchartArrowPath extends ModchartRenderer<FlxSprite>
 
         var moved = false;
 
-        pathVector.setTo(instance.getReceptorX(lane, fn), instance.getReceptorY(lane, fn), 0);
+        pathVector.setTo(Manager.PLUGIN.getDefaultReceptorX(lane, fn), Manager.PLUGIN.getDefaultReceptorY(lane, fn), 0);
         pathVector.incrementBy(ModchartUtil.getHalfPos());
 
         var pointData:Array<Array<Dynamic>> = [];
@@ -518,7 +522,7 @@ class ModchartArrowPath extends ModchartRenderer<FlxSprite>
             var time = -500 + invertal * sub;
 
             var output = instance.modifiers.getPath(pathVector.clone(), {
-                time: Conductor.songPosition + time,
+                time: Manager.PLUGIN.getSongPosition() + time,
                 hDiff: time,
                 receptor: lane,
                 field: fn,
@@ -555,7 +559,7 @@ class ModchartArrowPath extends ModchartRenderer<FlxSprite>
         __pathPoints.splice(0, __pathPoints.length);
 		__pathCommands.splice(0, __pathCommands.length);
 		__shape.graphics.clear();
-		__display.cameras = [instance.game.camHUD];
+		__display.cameras = Manager.PLUGIN.getArrowCamera();
 
         final iterator = queue.iterator();
         var lastLane = -1;

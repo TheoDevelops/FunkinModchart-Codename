@@ -20,9 +20,9 @@ class Stealth extends Modifier
 	public function getSuddenStart(params){
 		return (120 * getPercent('suddenExtend', params.field)) + (FlxG.height* 0.5) + fadeDistY * FlxMath.remapToRange(getPercent('sudden', params.field),0,1,0,0.25) + (FlxG.height* 0.5) * getPercent("suddenOffset", params.field);
 	}
-	public function new()
+	public function new(pf)
 	{
-		super();
+		super(pf);
 
 		setPercent('alpha', 1, -1);
 	}

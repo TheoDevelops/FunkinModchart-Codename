@@ -5,10 +5,11 @@ var m:Manager;
 function postCreate()
 {
 	m = new Manager(PlayState.instance);
-	m.HOLD_SUBDIVITIONS = 8;
+	m.HOLD_SUBDIVITIONS = 4;
 	m.renderArrowPaths = true;
 	add(m);
 
+	m.setPercent('orient', 1);
 	m.setPercent('arrowPathThickness', 2);
 
 	m.addModifier('transform');

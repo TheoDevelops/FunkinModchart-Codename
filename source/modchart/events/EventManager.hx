@@ -1,15 +1,21 @@
 package modchart.events;
 
+import modchart.core.PlayField;
 import modchart.core.util.ModchartUtil;
 import modchart.events.types.*;
 
 import haxe.ds.StringMap;
 
+@:allow(modchart.events.Event)
 class EventManager
 {
 	private var table:StringMap<Array<Array<Event>>> = new StringMap();
-	
-    public function new() {};
+	private var pf:PlayField;
+
+    public function new(pf:PlayField)
+	{
+		this.pf = pf;
+	}
 
     public function add(event:Event)
     {

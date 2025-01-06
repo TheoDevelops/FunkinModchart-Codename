@@ -7,9 +7,9 @@ import openfl.geom.Vector3D;
 
 class Scale extends Modifier
 {
-	public function new()
+	public function new(pf)
 	{
-		super();
+		super(pf);
 
 		setPercent('scale', 1, -1);
 		setPercent('scaleX', 1, -1);

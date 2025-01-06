@@ -63,7 +63,8 @@ class ModifierGroup
         'vibrate' => Vibrate,
         'bounce' => Bounce,
         'radionic' => Radionic,
-        'arrowpath' => ArrowPath
+        'arrowpath' => ArrowPath,
+        'drugged' => Drugged
     ];
 	private var MODIFIER_REGISTRERY:Map<String, Class<Modifier>> = GLOBAL_MODIFIERS;
 
@@ -72,8 +73,12 @@ class ModifierGroup
 
 	private var sortedMods:Vector<String>;
 
-	public function new()
+	private var pf:PlayField;
+
+	public function new(pf:PlayField)
 	{
+		this.pf = pf;
+
 		__allocModSorting([]);
 	}
 
@@ -108,7 +113,7 @@ class ModifierGroup
 			final mod = modifiers.get(sortedMods[i]);
 
 			final args:RenderParams = {
-				sPos: Conductor.songPosition,
+				sPos: Manager.PLUGIN.getSongPosition(),
 				fBeat: Conductor.curBeatFloat,
 				time: data.time + posDiff,
 				hDiff: data.hDiff + posDiff,
@@ -152,7 +157,7 @@ class ModifierGroup
 
 			return;
 		}
-		var newModifier = Type.createInstance(modifierClass, []);
+		var newModifier = Type.createInstance(modifierClass, [pf]);
 		modifiers.set(name.toLowerCase(), newModifier);
 
 		final newArr = sortedMods.toArray();
@@ -177,8 +182,9 @@ class ModifierGroup
 	private function getDefaultPerc():IntMap<Float>
 	{
 		final percmap = new IntMap<Float>();
-		percmap.set(0, 0.);
-		percmap.set(1, 0.);
+
+		for (i in 0...Manager.PLUGIN.getPlayercount())
+			percmap.set(i, 0.);
 		return percmap;
 	}
 }

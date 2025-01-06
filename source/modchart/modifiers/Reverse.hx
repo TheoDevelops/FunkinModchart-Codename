@@ -13,9 +13,9 @@ import funkin.game.PlayState;
 // Handles scroll speed, scroll angle and reverse modifiers
 class Reverse extends Modifier
 {
-	public function new()
+	public function new(pf)
 	{
-		super();
+		super(pf);
 
 		setPercent('xmod', 1, -1);
 	}
@@ -48,7 +48,7 @@ class Reverse extends Modifier
     }
     override public function render(curPos:Vector3D, params:RenderParams)
     {
-		var initialY = Manager.instance.getReceptorY(params.receptor, params.field) + ARROW_SIZEDIV2;
+		var initialY = Manager.PLUGIN.getDefaultReceptorY(params.receptor, params.field) + ARROW_SIZEDIV2;
 		var reversePerc = getReverseValue(params.receptor, params.field);
 		var shift = FlxMath.lerp(initialY, HEIGHT - initialY, reversePerc);
 		

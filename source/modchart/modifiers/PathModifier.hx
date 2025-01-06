@@ -1,5 +1,6 @@
 package modchart.modifiers;
 
+import modchart.core.PlayField;
 import modchart.core.util.Constants.RenderParams;
 import modchart.core.util.Constants.ArrowData;
 import modchart.core.util.ModchartUtil;
@@ -25,9 +26,9 @@ class PathModifier extends Modifier
 	// set this to false if wanna extra performance
 	public var pathLinear:Bool = false;
 	
-	public function new(path:Array<PathNode>)
+	public function new(pf:PlayField, path:Array<PathNode>)
 	{
-		super();
+		super(pf);
 
 		loadPath(path);
 	}

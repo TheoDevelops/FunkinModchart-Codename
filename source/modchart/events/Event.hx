@@ -19,7 +19,6 @@ class Event
 
 	public var active:Bool = false;
 
-
     public function new(beat:Float, callback:Event->Void, parent:EventManager, ?mercy:Bool = false)
     {
         this.beat = beat;
@@ -38,12 +37,12 @@ class Event
     }
 	public function create() {}
 	
-    public function setModPercent(name, value, field)
+    public function setModPercent(name, value, player)
     {
-        Manager.instance.setPercent(name.toLowerCase(), value, field);
+        parent.pf.setPercent(name, value, player);
     }
-	public function getModPercent(name, field):Float
+	public function getModPercent(name, player):Float
 	{
-		return Manager?.instance?.getPercent(name, field) ?? 0;
+		return parent.pf.getPercent(name, player);
 	}
 }
