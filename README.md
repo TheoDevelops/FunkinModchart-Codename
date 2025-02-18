@@ -1,3 +1,6 @@
+## DON'T USE THIS
+This is old and its not longer maintained, go and see the pull request adding this to Codename Engine
+
 <p align="center">
   <h1 align="center">FunkinModchart</h1>
   <h4 align="center">An Modcharting backend library for Friday Night Funkin' made by modders, to modders.</h4>
