@@ -1,5 +1,6 @@
 ## DON'T USE THIS
-This is old and its not longer maintained, go and see the pull request adding this to Codename Engine
+This is old and its not longer maintained, the system was switched into a library.
+Go [here](https://github.com/CodenameCrew/CodenameEngine/pull/526), this is the official FunkinModchart port for codename.
 
 <p align="center">
   <h1 align="center">FunkinModchart</h1>
